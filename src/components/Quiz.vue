@@ -142,7 +142,7 @@ const shuffleWords = (): void => {
     </div>
 
     <div v-if="currentWord" class="question">
-      <p>{{ currentIndex }} / {{ words.length }}</p>
+      <p>{{ currentIndex + 1}} / {{ words.length }}</p>
       <p><strong>{{ currentWord?.kanji }}</strong></p>
       <input
           v-model="userAnswer"
