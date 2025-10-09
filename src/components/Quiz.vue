@@ -21,7 +21,7 @@ const maxDay = ref<number>(0)
 
 // ----- Google Sheets 設定 -----
 const SPREADSHEET_ID = '1p32SlSi6j3Uy4nxRhdY1cELmGnBSsxsMDiDwllrvXW0'
-const API_KEY = import.meta.env.GOOGLE_API_KEY
+const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY
 
 const init = async () => {
   currentIndex.value = 0
