@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import Countdown from "./components/Countdown.vue";
+import Quiz from "./components/Quiz.vue";
 </script>
 
 <template>
-  <HelloWorld msg="hello world"/>
+  <Countdown/>
+  <Quiz/>
 </template>
 
 <style scoped>
