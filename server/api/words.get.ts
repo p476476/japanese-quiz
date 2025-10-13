@@ -12,7 +12,7 @@ export async function fetchWordsFromSheet(spreadsheetId: string, range: string, 
     return data.values.map((row: string[]) => ({kanji: row[0], hiragana: row[1], meaning: row[2]}))
 }
 
-export default defineEventHandler(async () => {
+export default cachedEventHandler(async () => {
     const apiKey = process.env.GOOGLE_API_KEY
     const spreadsheetId = process.env.SPREADSHEET_ID
 
@@ -22,7 +22,7 @@ export default defineEventHandler(async () => {
             statusMessage: 'Missing Google Sheets API credentials.'
         })
     }
-
+    
     const sheetCount = await fetchSpreadsheetCount(spreadsheetId, apiKey)
     const allWords: Word[][] = []
 
@@ -40,4 +40,8 @@ export default defineEventHandler(async () => {
             statusMessage: 'Failed to load words.'
         })
     }
+}, {
+    maxAge: 60 * 5, // 5分鐘快取
+    staleMaxAge: 60 * 10, // 可接受10分鐘的舊資料
+    swr: true, // 支援 stale-while-revalidate
 })
