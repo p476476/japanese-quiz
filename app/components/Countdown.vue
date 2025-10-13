@@ -24,7 +24,7 @@ const updateCountdown = () => {
   const minutes = Math.floor((diff / (1000 * 60)) % 60)
   const seconds = Math.floor((diff / 1000) % 60)
 
-  countdown.value = `${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`
+  countdown.value = `${days}天 ${hours}時間 ${minutes}分 ${seconds}秒`
 }
 
 // 啟動倒數
@@ -41,7 +41,7 @@ onUnmounted(() => {
 
 <template>
   <div class="countdown">
-    <p>距離 JLPT 還有：{{ countdown }}</p>
+    <p>距離審判日：{{ countdown }}</p>
   </div>
 </template>
 
@@ -50,6 +50,6 @@ onUnmounted(() => {
   text-align: center;
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 20px;
+  //margin-bottom: 20px;
 }
 </style>

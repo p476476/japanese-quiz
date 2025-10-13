@@ -1,5 +1,7 @@
 import type {Word} from "../interfaces/word.ts";
 
+const apiKey = process.env.GOOGLE_API_KEY
+
 export async function fetchWordsFromSheet(spreadsheetId: string, range: string, apiKey: string): Promise<Word[]> {
     const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`)
     const data = await res.json()

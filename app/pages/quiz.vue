@@ -1,57 +1,38 @@
 <script lang="ts" setup>
 import {onMounted, ref} from 'vue'
-import {fetchSpreadsheetCount, fetchWordsFromSheet} from "../services/sheet.ts";
-import type {Word} from "../interfaces/word.ts";
+import type {Word} from "~/interfaces/word";
+import {getWordList} from "~/composables/getWordList";
 
 // ----- 型別定義 -----
 
 // ----- 狀態 -----
-const words = ref<Word[]>([])
+const selectedDay = ref<number>(1)
 // 題目順序
 const shuffledIndexes = [] as number[]
 const wrongWords = ref<Word[]>([])
-const currentIndex = ref<number>(0)
-const currentWord = ref<Word | null>(null)
+const currentIndex = ref<number>(-1)
 const userAnswer = ref<string>('')
 const feedback = ref<string>('')
 const isCorrect = ref<boolean>(false)
-const score = ref<number>(0)
-const selectedDay = ref<string>("DAY1")
 const maxDay = ref<number>(0)
-
-// ----- Google Sheets 設定 -----
-const SPREADSHEET_ID = '1p32SlSi6j3Uy4nxRhdY1cELmGnBSsxsMDiDwllrvXW0'
-const API_KEY = 'AIzaSyBVEKg-ozr1Bia9nC7dpQc0QwVUg5XAhc0'
+const wordList = ref<Word[][]>(await getWordList())
+const dayWords = ref<Word[]>([])
+const currentWord = ref<Word | null>(null)
 
 const init = async () => {
   currentIndex.value = 0
-  score.value = 0
   feedback.value = ''
-  currentWord.value = null
   userAnswer.value = ''
   feedback.value = ''
-  maxDay.value =  await fetchSpreadsheetCount(SPREADSHEET_ID, API_KEY);
+  maxDay.value =  wordList.value.length
   wrongWords.value = []
   
-  await fetchWords();
   shuffleWords();
-  let nextIndex = shuffledIndexes[0] ?? -1
-  currentWord.value = words.value[nextIndex] || null;
 }
 
-const selectDay = (dayStr: string) => {
-  selectedDay.value = dayStr;
+const selectDay = (day: number) => {
+  selectedDay.value = day;
   init();
-}
-
-// ----- 取得單字 -----
-const fetchWords = async (): Promise<void> => {
-  try {
-    words.value = await fetchWordsFromSheet(SPREADSHEET_ID, `${selectedDay.value}!A:B`, API_KEY)
-    currentWord.value = words.value[currentIndex.value] || null
-  } catch (err) {
-    console.error('讀取單字失敗', err)
-  }
 }
 
 // ----- 檢查答案 -----
@@ -61,7 +42,6 @@ const checkAnswer = (): void => {
   if (userAnswer.value === currentWord.value.hiragana) {
     feedback.value = '答對了！🎉'
     isCorrect.value = true
-    score.value++
   } else {
     feedback.value = `答錯了，正確答案是: ${currentWord.value.hiragana}`
     isCorrect.value = false
@@ -77,16 +57,12 @@ const checkAnswer = (): void => {
 // ----- 下一題 -----
 const nextWord = (): void => {
   currentIndex.value++
-  if (currentIndex.value >= words.value.length) {
+  if (currentIndex.value >= dayWords.value.length) {
     feedback.value = '測驗結束！'
-
-    currentIndex.value = 0
-    score.value = 0
+    currentIndex.value = -1
   } else {
     feedback.value = ''
   }
-  let nextIndex = shuffledIndexes[currentIndex.value] ?? -1
-  currentWord.value = words.value[nextIndex] || null
   userAnswer.value = ''
 }
 
@@ -96,7 +72,7 @@ const shuffleWords = (): void => {
     shuffledIndexes.pop();
   }
 
-  for (let i = 0; i < words.value.length; i++) {
+  for (let i = 0; i < dayWords.value.length; i++) {
     shuffledIndexes.push(i)
   }
   let currentIndex = shuffledIndexes.length;
@@ -116,11 +92,13 @@ const shuffleWords = (): void => {
   }
 }
 
+watch([wordList, selectedDay, currentIndex], () => {
+  dayWords.value = wordList.value[selectedDay.value - 1] || [];
+  currentWord.value = dayWords.value[currentIndex.value] || null;
+});
+
 // ----- 元件掛載時取得單字 -----
   onMounted(() => {
-    //從 Google Sheets 取得最大天數
-    
-    
     init();
   })
 </script>
@@ -132,17 +110,17 @@ const shuffleWords = (): void => {
     <!-- 天數按鈕 -->
     <div class="day-buttons">
       <button
-          v-for="day in Array(maxDay).fill(0).map((_, i) => 'DAY' + (i + 1))"
-          :key="day"
-          :class="{ active: selectedDay === day }"
-          @click="selectDay(day)"
+          v-for="(day, i) in Array(maxDay).fill(0)"
+          :key="i"
+          :class="{ active: selectedDay === i + 1 }"
+          @click="selectDay(i + 1)"
       >
-        {{ day }}
+        DAY{{ i + 1 }}
       </button>
     </div>
 
-    <div v-if="currentWord" class="question">
-      <p>{{ currentIndex + 1}} / {{ words.length }}</p>
+    <div v-if="currentIndex >= 0" class="question">
+      <p>{{ currentIndex + 1}} / {{ dayWords.length }}</p>
       <p><strong>{{ currentWord?.kanji }}</strong></p>
       <input
           v-model="userAnswer"
