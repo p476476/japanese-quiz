@@ -24,7 +24,7 @@ const updateCountdown = () => {
   const minutes = Math.floor((diff / (1000 * 60)) % 60)
   const seconds = Math.floor((diff / 1000) % 60)
 
-  countdown.value = `${days}天 ${hours}時間 ${minutes}分 ${seconds}秒`
+  countdown.value = `${days}日 ${hours}時 ${minutes}分 ${seconds}秒`
 }
 
 // 啟動倒數
