@@ -24,9 +24,9 @@ const init = async () => {
   feedback.value = ''
   userAnswer.value = ''
   feedback.value = ''
-  maxDay.value =  wordList.value.length
+  maxDay.value = wordList.value.length
   wrongWords.value = []
-  
+
   shuffleWords();
 }
 
@@ -72,7 +72,7 @@ const shuffleWords = (): void => {
     shuffledIndexes.pop();
   }
 
-  for (let i = 0; i < dayWords.value.length; i++) {
+  for (let i = 0; i < wordList.value[selectedDay.value - 1]!.length; i++) {
     shuffledIndexes.push(i)
   }
   let currentIndex = shuffledIndexes.length;
@@ -99,9 +99,10 @@ watch([wordList, selectedDay, currentIndex], () => {
 });
 
 // ----- 元件掛載時取得單字 -----
-  onMounted(() => {
-    init();
-  })
+onMounted(() => {
+  init();
+})
+
 </script>
 
 <template>
@@ -121,7 +122,7 @@ watch([wordList, selectedDay, currentIndex], () => {
     </div>
 
     <div v-if="currentIndex >= 0" class="question">
-      <p>{{ currentIndex + 1}} / {{ dayWords.length }}</p>
+      <p>{{ currentIndex + 1 }} / {{ dayWords.length }}</p>
       <p><strong>{{ currentWord?.kanji }}</strong></p>
       <input
           v-model="userAnswer"
