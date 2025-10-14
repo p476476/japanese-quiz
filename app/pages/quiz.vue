@@ -94,7 +94,8 @@ const shuffleWords = (): void => {
 
 watch([wordList, selectedDay, currentIndex], () => {
   dayWords.value = wordList.value[selectedDay.value - 1] || [];
-  currentWord.value = dayWords.value[currentIndex.value] || null;
+  let index = shuffledIndexes[currentIndex.value] || 0;
+  currentWord.value = dayWords.value[index] || null;
 });
 
 // ----- 元件掛載時取得單字 -----
