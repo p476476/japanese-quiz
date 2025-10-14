@@ -10,6 +10,7 @@ const dayWords = ref<Word[]>([])
 // Visibility controls
 const showHiragana = ref(true)
 const showMeaning = ref(true)
+const showKanji = ref(true)
 const selectDay = (day: number) => {
   selectedDay.value = day;
 }
@@ -40,6 +41,10 @@ watch(wordList, () => {
   <!-- Visibility toggles -->
   <div class="visibility-controls">
     <label>
+      <input type="checkbox" v-model="showKanji" />
+      漢字
+    </label>
+    <label>
       <input type="checkbox" v-model="showHiragana" />
       平假名
     </label>
@@ -51,18 +56,17 @@ watch(wordList, () => {
   
   
   <div>
-    <h2>單字列表 - DAY{{ selectedDay }}</h2>
     <table class="word-table">
       <thead>
       <tr>
-        <th>漢字</th>
+        <th v-if="showKanji">漢字</th>
         <th v-if="showHiragana">平假名</th>
         <th v-if="showMeaning">意味</th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="word in dayWords" :key="word.kanji">
-        <td>{{ word.kanji }}</td>
+        <td v-if="showKanji">{{word.kanji}}</td>
         <td v-if="showHiragana">{{ word.hiragana }}</td>
         <td v-if="showMeaning">{{ word.meaning }}</td>
       </tr>
