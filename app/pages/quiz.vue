@@ -109,16 +109,11 @@ onMounted(() => {
   <div class="quiz-container">
     <h1>日文單字小考</h1>
 
-    <!-- 天數按鈕 -->
-    <div class="day-buttons">
-      <button
-          v-for="(day, i) in Array(maxDay).fill(0)"
-          :key="i"
-          :class="{ active: selectedDay === i + 1 }"
-          @click="selectDay(i + 1)"
-      >
-        DAY{{ i + 1 }}
-      </button>
+    <div>
+      <DayScrollButtons
+          v-model:selectedDay="selectedDay"
+          :maxDay="maxDay"
+      />
     </div>
 
     <div v-if="currentIndex >= 0" class="question">

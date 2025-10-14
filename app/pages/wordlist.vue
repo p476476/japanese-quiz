@@ -1,7 +1,7 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { getWordList } from '~/composables/getWordList'
-import type { Word } from '~/interfaces/word'
+<script lang="ts" setup>
+import {ref} from 'vue'
+import {getWordList} from '~/composables/getWordList'
+import type {Word} from '~/interfaces/word'
 // ----- 狀態 -----
 const selectedDay = ref<number>(1)
 const maxDay = ref<number>(0)
@@ -17,44 +17,39 @@ const selectDay = (day: number) => {
 
 watch([selectedDay, wordList], () => {
   dayWords.value = wordList.value[selectedDay.value - 1] || [];
-}, { immediate: true })
+}, {immediate: true})
 
 watch(wordList, () => {
   maxDay.value = wordList.value.length;
-}, { immediate: true })
+}, {immediate: true})
 
 </script>
 
 <template>
-  <!-- 天數按鈕 -->
-  <div class="day-buttons">
-    <button
-        v-for="(day, i) in Array(maxDay).fill(0)"
-        :key="i"
-        :class="{ active: selectedDay === i + 1 }"
-        @click="selectDay(i + 1)"
-    >
-      DAY{{ i + 1 }}
-    </button>
+  <div>
+    <DayScrollButtons
+        v-model:selectedDay="selectedDay"
+        :maxDay="maxDay"
+    />
   </div>
 
   <!-- Visibility toggles -->
   <div class="visibility-controls">
     <label>
-      <input type="checkbox" v-model="showKanji" />
+      <input v-model="showKanji" type="checkbox"/>
       漢字
     </label>
     <label>
-      <input type="checkbox" v-model="showHiragana" />
+      <input v-model="showHiragana" type="checkbox"/>
       平假名
     </label>
     <label>
-      <input type="checkbox" v-model="showMeaning" />
+      <input v-model="showMeaning" type="checkbox"/>
       意味
     </label>
   </div>
-  
-  
+
+
   <div>
     <table class="word-table">
       <thead>
@@ -66,7 +61,7 @@ watch(wordList, () => {
       </thead>
       <tbody>
       <tr v-for="word in dayWords" :key="word.kanji">
-        <td v-if="showKanji">{{word.kanji}}</td>
+        <td v-if="showKanji">{{ word.kanji }}</td>
         <td v-if="showHiragana">{{ word.hiragana }}</td>
         <td v-if="showMeaning">{{ word.meaning }}</td>
       </tr>
@@ -101,12 +96,5 @@ watch(wordList, () => {
   }
 }
 
-.day-buttons {
-  margin-bottom: 20px;
-}
 
-.day-buttons button.active {
-  background-color: #42b983;
-  color: white;
-}
 </style>
