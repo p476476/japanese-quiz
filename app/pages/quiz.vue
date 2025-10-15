@@ -26,13 +26,9 @@ const init = async () => {
   feedback.value = ''
   maxDay.value = wordList.value.length
   wrongWords.value = []
+  dayWords.value = wordList.value[selectedDay.value - 1] || [];
 
   shuffleWords();
-}
-
-const selectDay = (day: number) => {
-  selectedDay.value = day;
-  init();
 }
 
 // ----- 檢查答案 -----
@@ -92,8 +88,11 @@ const shuffleWords = (): void => {
   }
 }
 
-watch([wordList, selectedDay, currentIndex], () => {
-  dayWords.value = wordList.value[selectedDay.value - 1] || [];
+watch(selectedDay, () => {
+  init();
+});
+
+watch(currentIndex, () => {
   let index = shuffledIndexes[currentIndex.value] || 0;
   currentWord.value = dayWords.value[index] || null;
 });
