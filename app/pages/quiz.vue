@@ -29,6 +29,8 @@ const init = async () => {
   dayWords.value = wordList.value[selectedDay.value - 1] || [];
 
   shuffleWords();
+  let index = shuffledIndexes[currentIndex.value] || 0;
+  currentWord.value = dayWords.value[index] || null;
 }
 
 // ----- 檢查答案 -----
